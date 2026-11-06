@@ -66,7 +66,6 @@ app.post('/api/chat', async (req, res) => {
     };
 
     db.conversations.unshift(loggedConv);
-    // Keep max 250 in log
     if (db.conversations.length > 250) {
       db.conversations = db.conversations.slice(0, 250);
     }
@@ -135,10 +134,16 @@ app.post('/api/db/reset', (req, res) => {
   res.json({ success: true, message: "Database reset to initial state" });
 });
 
-app.listen(PORT, () => {
-  console.log(`=======================================================`);
-  console.log(`🚀 PayPal Assist (ResolveAI) running on http://localhost:${PORT}`);
-  console.log(`Mode: ${process.env.ANTHROPIC_API_KEY ? "Anthropic Claude Live" : "Built-in Autonomous Engine"}`);
-  console.log(`PayPal Developer Sandbox: Active`);
-  console.log(`=======================================================`);
+// Fallback route for SPA static index
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+
+// Only listen when executed directly (not in serverless export)
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`🚀 PayPal Assist running on http://localhost:${PORT}`);
+  });
+}
+
+export default app;
