@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PayPal Assist (ResolveAI) - Official AI Customer Support & Support Insights</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="app-sidebar">
+      <div class="sidebar-header">
+        <div class="brand-icon">P</div>
+        <div>
+          <div class="brand-title">PayPal Assist</div>
+          <div class="brand-sub">ResolveAI Platform</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" id="nav-chat-btn" onclick="switchView('chat')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          Customer Support Chat
+        </button>
+        <button class="nav-item" id="nav-dash-btn" onclick="switchView('dashboard')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          Support Insights & Patterns
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-badge">
+          <div class="user-avatar">SM</div>
+          <div class="user-info">
+            <span class="user-name">Sarah Miller</span>
+            <span class="user-role">US Premier Account</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main class="app-main">
+      <!-- Top Navigation -->
+      <header class="top-navbar">
+        <div class="page-headline">
+          <h1 class="page-title" id="page-title-text">Payment Assistance Chat</h1>
+          <span class="sandbox-pill">● PayPal Sandbox & Mock Active</span>
+        </div>
+        <div class="top-actions">
+          <button class="btn btn-secondary" onclick="triggerDemoPayment()" title="Simulate a failed-but-deducted payment to test the main use case">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+            Trigger Demo Failed Payment
+          </button>
+          <button class="btn btn-secondary" onclick="createSandboxOrder()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+            Create Sandbox Order
+          </button>
+          <button class="btn btn-danger-outline" onclick="resetDatabase()" title="Reset mock database to seed state">
+            Reset Data
+          </button>
+        </div>
+      </header>
+
+      <!-- VIEW 1: Customer Support Chat View -->
+      <section class="view-section active" id="view-chat">
+        <div class="chat-layout">
+          <!-- Chat Feed -->
+          <div class="chat-center">
+            <div class="chat-messages" id="chat-messages-container">
+              <!-- AI Welcome Message -->
+              <div class="message-row ai">
+                <div class="avatar ai">AI</div>
+                <div class="bubble">
+                  Hello Sarah, I am <strong>PayPal Assist</strong>, an AI customer support assistant.
+                  <br><br>
+                  I'm here to help diagnose payment issues, explain authorization holds on failed checkouts, calculate cross-border fees, and track disputes. 
+                  <br><br>
+                  <em>Note: I will never ask for your password, card CVV, or OTP codes. How can I assist you with your account today?</em>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Action Chips & Input -->
+            <div class="chat-bottom">
+              <div class="quick-chips-row">
+                <button class="chip-btn" onclick="sendQuickPrompt('Why did my transaction TXN-88291034 fail but money was deducted?')">
+                  💳 TXN-88291034: Failed but deducted?
+                </button>
+                <button class="chip-btn" onclick="sendQuickPrompt('Check status on my held transfer TXN-99120481')">
+                  ⏳ Check Held Transfer (EUR 420)
+                </button>
+                <button class="chip-btn" onclick="sendQuickPrompt('What are the international FX conversion fees from USD to EUR?')">
+                  🌍 Currency Conversion Fees
+                </button>
+                <button class="chip-btn" onclick="sendQuickPrompt('What is the status of my dispute PP-D-883921?')">
+                  ⚖️ Dispute Status (PP-D-883921)
+                </button>
+                <button class="chip-btn" onclick="sendQuickPrompt('Mera payment fail ho gaya par mere bank se paise kat gaye TXN-88291034')">
+                  🇮🇳 Hindi: पैसे कट गए पर पेमेंट फेल
+                </button>
+              </div>
+
+              <div class="input-box-wrapper">
+                <input 
+                  type="text" 
+                  id="chat-input-field" 
+                  class="chat-input" 
+                  placeholder="Describe your payment issue or enter a Transaction ID (e.g. TXN-88291034)..."
+                  onkeydown="handleInputKey(event)"
+                />
+                <button class="send-btn" id="send-btn" onclick="sendMessage()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Diagnostic Side Panel -->
+          <aside class="chat-sidepanel">
+            <div class="panel-card">
+              <div class="panel-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                Active Safety Guardrails
+              </div>
+              <ul style="font-size: 12px; color: #475569; line-height: 1.6; padding-left: 18px;">
+                <li>Automatic PII & card number redaction before logging</li>
+                <li>Strict zero-credential sharing policy (No OTPs/CVVs)</li>
+                <li>Prompt-injection resistant persona isolation</li>
+                <li>Transparent "Why I think this" explanations</li>
+              </ul>
+            </div>
+
+            <div class="panel-card">
+              <div class="panel-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                Live Escalation Rules
+              </div>
+              <p style="font-size: 12px; color: #475569; line-height: 1.5;">
+                Phone callbacks are strictly reserved for:
+              </p>
+              <ul style="font-size: 11.5px; color: #64748b; margin-top: 6px; padding-left: 18px; line-height: 1.5;">
+                <li>High-risk fraud or unauthorized takeovers</li>
+                <li>Customer dissatisfaction or explicit human request</li>
+                <li>Repeated unresolved attempts (auto-summary handoff)</li>
+              </ul>
+            </div>
+
+            <div class="panel-card">
+              <div class="panel-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
+                Sandbox Environment
+              </div>
+              <p style="font-size: 12px; color: #475569;">
+                Connected to PayPal Sandbox REST API & Mock Ledger. Orders, authorizations, and refunds update in real time.
+              </p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- VIEW 2: Support Team Insights & Pattern Analysis Dashboard -->
+      <section class="view-section" id="view-dashboard">
+        <div class="dashboard-view">
+          <!-- Metric Cards -->
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <span class="metric-lbl">Total Conversations</span>
+              <span class="metric-num" id="metric-total">204</span>
+              <span style="font-size: 11px; color: #059669;">↑ 12% vs last 7 days</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-lbl">Chat Resolution Rate</span>
+              <span class="metric-num" id="metric-resolution">88.2%</span>
+              <span style="font-size: 11px; color: #059669;">+4.1% over manual queue</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-lbl">Avg Time to Resolution</span>
+              <span class="metric-num" id="metric-duration">2.4 min</span>
+              <span style="font-size: 11px; color: #2563eb;">Instant diagnosis & tools</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-lbl">CSAT Rating</span>
+              <span class="metric-num">4.8 / 5.0</span>
+              <span style="font-size: 11px; color: #059669;">★★★★★ verified</span>
+            </div>
+          </div>
+
+          <div class="dashboard-row">
+            <!-- AI Clustered Recurring Problem Patterns -->
+            <div class="patterns-container">
+              <h2 style="font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">
+                Top Recurring Issue Clusters & AI Recommendations
+              </h2>
+              <div id="patterns-list">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Redacted Conversation Stream -->
+            <div>
+              <h2 style="font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 12px;">
+                Recent Redacted Tickets
+              </h2>
+              <div style="background: #fff; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); overflow: hidden;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 12.5px; text-align: left;">
+                  <thead style="background: var(--bg-surface-subtle); border-bottom: 1px solid var(--border-subtle); color: var(--text-muted); font-size: 11px; text-transform: uppercase;">
+                    <tr>
+                      <th style="padding: 10px 12px;">Ticket ID</th>
+                      <th style="padding: 10px 12px;">Category</th>
+                      <th style="padding: 10px 12px;">Status</th>
+                      <th style="padding: 10px 12px;">Sentiment</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recent-tickets-tbody">
+                    <!-- Dynamically populated -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Callback Booking Modal -->
+  <div class="modal-overlay" id="callback-modal">
+    <div class="modal-content">
+      <h3 style="font-family: var(--font-display); font-size: 17px; margin-bottom: 6px;">Schedule Senior Support Callback</h3>
+      <p style="font-size: 13px; color: #64748b; margin-bottom: 16px;" id="modal-case-sub">Case: CAS-9102</p>
+
+      <div style="margin-bottom: 14px;">
+        <label style="font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">Selected Time Slot</label>
+        <input type="text" id="modal-slot-val" readonly style="width: 100%; padding: 8px 10px; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); font-size: 13px; background: #f8fafc;" />
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <label style="font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">Contact Phone Number</label>
+        <input type="tel" id="modal-phone-val" value="+1 (555) 234-8900" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); font-size: 13px;" />
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button class="btn btn-secondary" onclick="closeCallbackModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmCallbackBooking()">Confirm Callback</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

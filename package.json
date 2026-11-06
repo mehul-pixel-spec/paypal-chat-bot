@@ -1,0 +1,17 @@
+{
+  "name": "paypal-assist",
+  "version": "1.0.0",
+  "description": "PayPal Assist (ResolveAI) - AI Customer Support Assistant & Support Team Insights Dashboard for PayPal Hackathon",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node scripts/seed.js",
+    "eval": "node scripts/eval.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0"
+  }
+}
