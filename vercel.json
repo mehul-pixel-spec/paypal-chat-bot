@@ -1,5 +1,8 @@
 {
   "version": 2,
+  "framework": null,
+  "buildCommand": "node scripts/seed.js",
+  "outputDirectory": "public",
   "rewrites": [
     {
       "source": "/api/(.*)",
