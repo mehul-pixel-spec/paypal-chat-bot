@@ -134,8 +134,8 @@ app.post('/api/db/reset', (req, res) => {
   res.json({ success: true, message: "Database reset to initial state" });
 });
 
-// Fallback route for SPA static index
-app.get('*', (req, res) => {
+// Fallback route for SPA static index (Express 5 compatible wildcard)
+app.get('{*path}', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
