@@ -1,221 +1,465 @@
-export const KNOWLEDGE_BASE = [
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const KB_DIR = path.join(__dirname, '..', 'knowledge_base');
+
+if (!fs.existsSync(KB_DIR)) {
+  fs.mkdirSync(KB_DIR, { recursive: true });
+}
+
+export const FAQ_ARTICLES = [
   {
-    id: "kb-01",
-    title: "Money deducted from bank or card but payment marked as failed",
+    id: "faq-01",
+    title: "How to send money to friends, family, or merchants",
+    category: "send_money",
+    tags: ["send money", "transfer", "friends and family", "goods and services", "pay someone"],
+    content: `To send money on PayPal:
+1. Log in to your PayPal account and click "Send & Request".
+2. Enter the recipient's name, email address, or mobile number and click "Next".
+3. Enter the amount, choose the currency, and select payment type: "Friends and Family" (for personal gifts/reimbursements) or "Goods and Services" (for purchases covered by Buyer Protection).
+4. Select your payment method (PayPal balance, bank account, or card) and review details before clicking "Send Payment Now".
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
+  },
+  {
+    id: "faq-02",
+    title: "How to receive money and request payments",
+    category: "receive_money",
+    tags: ["receive money", "request payment", "paypal.me", "get paid", "invoicing"],
+    content: `To receive money on PayPal:
+1. Provide the sender with the email address or mobile number linked to your PayPal account.
+2. You can also create a personalized PayPal.Me link (paypal.me/YourName) and share it directly with buyers or acquaintances.
+3. To invoice clients, click "Send & Request" > "Manage Invoices" > "Create Invoice".
+4. When money is sent to you, you will receive an email confirmation and the funds appear in your PayPal balance or auto-transfer to your bank.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
+  },
+  {
+    id: "faq-03",
+    title: "PayPal fees breakdown: Domestic transfers, commercial, and cards",
+    category: "fees",
+    tags: ["fees", "cost", "rates", "percentage", "commercial fee", "transaction fee"],
+    content: `Standard PayPal fee guidelines:
+1. Sending money domestically to friends and family using a PayPal balance or linked bank account is free.
+2. Sending money with a credit or debit card incurs a standard fee (typically 2.9% + fixed currency fee).
+3. Receiving commercial payments for Goods and Services carries a merchant rate (typically 2.99% to 3.49% + fixed fee).
+4. Withdrawing funds to a local bank via standard ACH (1-3 business days) is free. Instant transfers to eligible debit cards incur a 1.75% fee (capped).
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
+  },
+  {
+    id: "faq-04",
+    title: "Payment failed at checkout but money was deducted from bank/card",
     category: "failed_deducted",
-    tags: ["failed", "deducted", "pending", "authorization hold", "declined", "charge"],
-    content: "When an online payment fails at checkout but you see a deduction on your bank or card statement, it is almost always a temporary 'Authorization Hold' rather than an actual settled charge. PayPal sends an authorization request to your card issuer/bank to secure the funds. If the checkout fails or times out before final capture, PayPal automatically cancels the authorization. However, banks may take 3 to 5 business days (and up to 30 days for some debit cards) to release the hold and reflect the balance. No dispute is required; the funds automatically drop back into your available balance."
+    tags: ["failed", "deducted", "temporary hold", "authorization hold", "declined", "charge"],
+    content: `If your payment shows as failed or unsuccessful during checkout but your bank or card shows a deduction:
+1. This is almost always a temporary "Authorization Hold", not an actual completed charge.
+2. When you initiate payment, PayPal requests a pre-authorization hold from your bank to ensure funds exist.
+3. If checkout drops or times out before capture, PayPal immediately voids the pre-authorization.
+4. Your bank or card issuer will release the held funds automatically within 3 to 5 business days (some debit cards may take up to 30 days). No dispute is required.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
   },
   {
-    id: "kb-02",
-    title: "Why is my payment pending or held?",
-    category: "pending_held",
-    tags: ["held", "pending", "21-day hold", "security review", "funds on hold", "delay"],
-    content: "PayPal places payments on hold for several safety reasons: 1) New seller or low selling history (standard 21-day safety hold). 2) Unusual sales pattern or sudden spike in payment volume. 3) Cross-border payment requiring manual risk assessment. 4) The payment was sent as an 'eCheck' directly from a bank, which takes 3 to 6 business days to clear. For goods, adding valid carrier tracking in the transaction details releases funds 1 day after confirmed delivery."
+    id: "faq-05",
+    title: "Why is my payment pending or placed on a 21-day hold?",
+    category: "pending_payments",
+    tags: ["pending", "held", "21-day hold", "seller hold", "risk hold", "delayed funds"],
+    content: `Payments may be marked "Pending" or "On Hold" for several reasons:
+1. New or infrequent sellers often encounter a standard temporary 21-day safety hold while establishing trust.
+2. The payment was sent as an eCheck, which requires 3 to 6 business days for the payer's bank to clear via ACH.
+3. The payment is undergoing standard cross-border regulatory or anti-fraud security review (typically 24 to 48 hours).
+4. Sellers can expedite fund release for physical goods by adding valid tracking; funds typically release 24 hours after carrier confirms delivery.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
   },
   {
-    id: "kb-03",
-    title: "How PayPal currency conversion and cross-border FX rates work",
-    category: "international_fx",
-    tags: ["fx", "currency conversion", "exchange rate", "international", "cross-border", "fees"],
-    content: "When sending or receiving money in a different currency, PayPal applies a wholesale exchange rate adjusted by a currency conversion spread (typically 3.0% to 4.5% above the wholesale base rate). During checkout, users can choose between PayPal's conversion rate or having their card issuer perform the currency conversion. International transactions may also incur an additional cross-border fee (usually 1.5% to 3.0% depending on source and destination countries)."
+    id: "faq-06",
+    title: "Refunds timeline: Where does my refund go and when does it arrive?",
+    category: "refunds",
+    tags: ["refund", "refund timeline", "where is refund", "credit card refund", "bank refund"],
+    content: `When a merchant or sender issues a refund:
+1. If paid with PayPal Balance: The refund is posted back to your PayPal balance immediately.
+2. If paid with Credit or Debit Card: The refund goes directly back to that card. Card issuers typically take 3 to 7 business days to post, though some card networks take up to 30 days.
+3. If paid with Bank Account: Funds clear back to your bank within 3 to 5 business days.
+4. PayPal returns money to the original funding source and never retains refunded amounts.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
   },
   {
-    id: "kb-04",
-    title: "Cross-border payment limits and country restrictions",
-    category: "international_fx",
-    tags: ["blocked country", "limits", "sanctions", "international limit", "rbi", "firc"],
-    content: "PayPal complies with global financial sanctions (OFAC) and local regulations. Certain jurisdictions (e.g. sanctioned countries or specific restricted regions) cannot send or receive payments. Additionally, unverified accounts have an annual sending limit. In India, RBI regulations require individual exports to have a valid Purpose Code (e.g. P0802 for software services) and auto-sweep to a linked Indian bank account daily; PayPal balances cannot be held by Indian personal accounts."
-  },
-  {
-    id: "kb-05",
-    title: "How to open and manage a dispute or claim in Resolution Center",
-    category: "disputes_refunds",
+    id: "faq-07",
+    title: "How to open and resolve disputes and claims in Resolution Center",
+    category: "disputes",
     tags: ["dispute", "resolution center", "chargeback", "claim", "item not received", "unauthorized"],
-    content: "If you did not receive an item or the item was significantly not as described, you have 180 calendar days from the payment date to open a dispute in the PayPal Resolution Center. Stage 1 is 'Dispute', where buyer and seller communicate directly for 20 days. If the seller does not cooperate or refund, either party can escalate to Stage 2 ('Claim') for PayPal to review and make a final ruling within 30 days."
+    content: `To resolve transaction issues:
+1. You have 180 calendar days from the date of payment to open a dispute in the Resolution Center.
+2. In Stage 1 ("Dispute"), you communicate directly with the seller for up to 20 days to negotiate a resolution or replacement.
+3. If the seller does not reply or reach an agreement, you can escalate the dispute to a PayPal "Claim" within those 20 days.
+4. Once escalated to a Claim, PayPal investigates evidence (carrier tracking, invoices) and issues a binding decision, typically within 30 days.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
   },
   {
-    id: "kb-06",
-    title: "Chargeback vs PayPal Dispute: Key differences",
-    category: "disputes_refunds",
-    tags: ["chargeback", "bank dispute", "card issuer", "buyer protection", "seller protection"],
-    content: "A dispute is handled internally by PayPal's Resolution Center. A chargeback is filed directly by the buyer through their credit card company or bank. If a chargeback is filed, the card issuer decides the outcome under their own rules, not PayPal. PayPal will notify the seller and request proof of shipment or delivery within 10 days to contest the chargeback under PayPal Seller Protection."
+    id: "faq-08",
+    title: "PayPal Dispute vs Bank Chargeback: Rules and differences",
+    category: "disputes",
+    tags: ["chargeback", "bank dispute", "card issuer", "seller protection", "buyer protection"],
+    content: `Understanding disputes vs chargebacks:
+1. A PayPal Dispute is filed directly within PayPal's Resolution Center and decided under PayPal Buyer/Seller Protection policies.
+2. A Chargeback is filed directly by the cardholder through their credit card company or issuing bank.
+3. If a chargeback is opened, the credit card company makes the final decision under Visa/Mastercard rules, not PayPal.
+4. Sellers covered by PayPal Seller Protection can submit proof of delivery within 10 days to contest unwarranted chargebacks.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
   },
   {
-    id: "kb-07",
-    title: "What to do if you suspect unauthorized activity or fraud",
-    category: "unauthorized_fraud",
-    tags: ["unauthorized", "hacked", "fraud", "suspicious", "stolen", "account takeover", "otp"],
-    content: "If you notice an unrecognized payment or suspect unauthorized account access: 1) Immediately change your PayPal password and security questions. 2) Review and revoke any active 'Automatic Payments' or billing agreements in Settings > Payments. 3) Report the unauthorized transaction in the Resolution Center within 60 days to be covered under PayPal's $0 unauthorized liability protection. 4) Turn on 2-Factor Authentication (2FA) via SMS or an Authenticator app. 5) Contact your bank if a linked card or bank account was debited."
+    id: "faq-09",
+    title: "International payments: Currency conversion, FX rates, and cross-border fees",
+    category: "international",
+    tags: ["international", "fx rate", "currency conversion", "cross-border fee", "exchange rate"],
+    content: `When sending or receiving money across international borders:
+1. Currency Conversion: PayPal uses a wholesale base rate plus a currency conversion spread (typically 3.0% to 4.5%).
+2. At checkout, buyers can choose between PayPal's conversion rate or letting their card issuer perform the FX conversion.
+3. Cross-Border Fees: Transactions between accounts registered in different countries incur an international transaction fee (typically 1.5% to 3.0%).
+4. Currency balances can be held in multiple supported foreign currencies within your PayPal wallet.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
   },
   {
-    id: "kb-08",
-    title: "Understanding account limitations and how to remove them",
-    category: "account_verification",
-    tags: ["limitation", "restricted", "account limited", "kyc", "identity verification", "lift limit"],
-    content: "An account limitation restricts sending, withdrawing, or receiving money. Limitations occur when: PayPal needs to verify your identity (KYC requirements), risk algorithms detect high-risk activity, or your account has a high dispute rate. To lift the limitation, visit the Resolution Center, click 'Go to Account Limitations', and complete the required steps (such as uploading government-issued photo ID, proof of address, or supplier invoices). Verification usually takes 24 to 72 business hours."
+    id: "faq-10",
+    title: "Cross-border payment limits, blocked countries, and RBI Purpose Codes (India)",
+    category: "international",
+    tags: ["purpose code", "rbi", "firc", "india export", "sanctions", "limits"],
+    content: `International regulatory policies:
+1. Blocked Countries: PayPal complies with OFAC sanctions; transactions to or from embargoed jurisdictions cannot be processed.
+2. Unverified Accounts: Annual sending/withdrawal limits apply until identity verification is completed.
+3. Indian Accounts (RBI Regulations): Under Reserve Bank of India rules, personal PayPal balances cannot be held. All incoming export payments must specify an RBI Purpose Code (such as P0802 for software services) and automatically daily sweep directly into your linked Indian bank account.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
   },
   {
-    id: "kb-09",
-    title: "Linking and confirming bank accounts and cards",
-    category: "account_verification",
-    tags: ["link bank", "confirm card", "4-digit code", "micro-deposits", "verification"],
-    content: "To confirm a bank account, PayPal sends two small deposits (between $0.01 and $0.99) within 2-3 business days. Once you see them on your bank statement, enter both amounts in PayPal under Wallet > Confirm Bank. For credit/debit cards, PayPal charges a refundable $1.95 amount accompanied by a 4-digit code on your card statement (e.g. PP*1234CODE). Enter this 4-digit code in Wallet to confirm the card and remove spending limits."
+    id: "faq-11",
+    title: "Understanding account limitations and steps to restore full access",
+    category: "account_limitations",
+    tags: ["account limitation", "restricted account", "identity verification", "kyc", "lift limit"],
+    content: `When an account is limited, you may temporarily be unable to send, withdraw, or receive money:
+1. Common causes: KYC compliance requirements, sudden spike in sales volume, high dispute rate, or suspected unauthorized logins.
+2. To lift the limitation, log in, navigate to the Resolution Center, and review the "Account Limitations" checklist.
+3. Upload required verification documents (such as government photo ID, proof of address, or supplier purchase invoices).
+4. PayPal reviews submitted documentation within 24 to 72 business hours.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
   },
   {
-    id: "kb-10",
-    title: "Refund timeline: Where does my refund go?",
-    category: "disputes_refunds",
-    tags: ["refund time", "where is refund", "refunded", "card refund", "balance refund"],
-    content: "When a merchant issues a refund, where the money goes depends on how you originally paid: 1) Paid with PayPal Balance: refunded instantly back to PayPal balance. 2) Paid with Credit or Debit Card: refunded directly to the card. It typically takes 3 to 7 business days, but some card issuers may take up to 30 days. 3) Paid with Bank Account: takes 3 to 5 business days to clear back to the bank. PayPal does not retain refunded amounts."
+    id: "faq-12",
+    title: "How to link and confirm a bank account or credit/debit card",
+    category: "linking_bank_card",
+    tags: ["link bank", "confirm card", "4-digit code", "micro deposits", "wallet"],
+    content: `To link and verify funding methods:
+1. Go to Wallet > "Link a card or bank".
+2. Bank Confirmation: PayPal sends two small deposits (between $0.01 and $0.99) within 2-3 business days. Once seen on your bank statement, enter both amounts under Wallet > Confirm Bank.
+3. Card Confirmation: PayPal initiates a temporary $1.95 refundable charge with a 4-digit code (e.g., PP*1234CODE). Enter this 4-digit code in Wallet to confirm card ownership and lift spending caps.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
   },
   {
-    id: "kb-11",
-    title: "Why was my payment declined by PayPal or my bank?",
+    id: "faq-13",
+    title: "Essential security tips: Phishing protection, spoof emails, and 2FA",
+    category: "security",
+    tags: ["security tips", "phishing", "fake email", "2fa", "authenticator", "spoof"],
+    content: `Keep your PayPal account safe:
+1. Official PayPal emails always greet you with your full name or registered business name, never "Dear Customer".
+2. Never share your password, OTP codes, CVV, or card PIN with anyone. PayPal will NEVER ask for secrets.
+3. Enable 2-Step Verification (2FA) via Settings > Security > 2-step verification using an Authenticator app.
+4. Forward suspicious spoof or phishing emails to phishing@paypal.com and delete them immediately without clicking links.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
+  },
+  {
+    id: "faq-14",
+    title: "What to do if you suspect unauthorized activity or an account takeover",
+    category: "security",
+    tags: ["unauthorized", "hacked", "stolen", "account takeover", "fraud alert"],
+    content: `If you detect unrecognized transactions or unauthorized logins:
+1. Immediately change your PayPal password and update your security questions.
+2. Navigate to Settings > Payments > "Automatic Payments" and cancel any active agreements you do not recognize.
+3. Report unauthorized charges in the Resolution Center within 60 days to qualify for $0 unauthorized liability protection.
+4. Contact your bank or card issuer immediately if linked financial sources were debited.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
+  },
+  {
+    id: "faq-15",
+    title: "How to contact customer support and schedule a phone callback",
+    category: "contact_support",
+    tags: ["contact support", "customer care", "phone number", "callback", "human agent"],
+    content: `Ways to contact PayPal Support:
+1. PayPal Assist AI is available 24/7 for instant transaction diagnostics, hold explanations, and dispute guidance.
+2. In-App Message Center: Connect with customer support specialists under Help > Message Center.
+3. Telephone Callback: If an inquiry cannot be resolved or involves high-risk unauthorized activity, you can request an escalated support ticket with a callback time slot so you never have to repeat your issue.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
+  },
+  {
+    id: "faq-16",
+    title: "Goods & Services vs Friends & Family: Which should you choose?",
+    category: "send_money",
+    tags: ["goods and services", "friends and family", "buyer protection", "seller fee"],
+    content: `Comparing payment types:
+1. Goods and Services: Intended for commercial transactions (buying items, hiring contractors). Covered by PayPal Purchase Protection. The seller pays the transaction processing fee.
+2. Friends and Family: Intended solely for personal transfers between acquaintances. Free within the same country using bank/balance. Not covered by Purchase Protection. Never use Friends & Family for purchases from strangers.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
+  },
+  {
+    id: "faq-17",
+    title: "eCheck payments: Why they take 3 to 6 business days to complete",
+    category: "pending_payments",
+    tags: ["echeck", "electronic check", "clearing time", "ach transfer", "pending check"],
+    content: `Understanding eChecks:
+1. An eCheck is an electronic funds transfer directly from your bank account without a backup card on file.
+2. Unlike instant transfers, eChecks rely on standard ACH bank clearing networks.
+3. It takes 3 to 6 business days for the funds to arrive in the recipient's PayPal account.
+4. Sellers should not ship merchandise until the transaction status updates from "Pending" to "Completed".
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
+  },
+  {
+    id: "faq-18",
+    title: "How to cancel automatic payments, subscriptions, and billing agreements",
+    category: "send_money",
+    tags: ["automatic payments", "cancel subscription", "billing agreement", "recurring payment"],
+    content: `To cancel recurring merchant billings:
+1. Go to Settings (gear icon) > Payments.
+2. Click "Automatic Payments" (or "Manage Automatic Payments").
+3. Select the merchant from the list on the left side of the screen.
+4. Click "Cancel" or "Turn Off" to prevent future automatic charges. Any past charge must be settled directly with the seller.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
+  },
+  {
+    id: "faq-19",
+    title: "Why was my payment declined by PayPal or my card issuer?",
     category: "failed_deducted",
-    tags: ["declined", "payment declined", "card declined", "risk filter", "insufficient funds"],
-    content: "Common reasons a payment is declined: 1) Your card issuer or bank blocked the transaction due to automated security or fraud filters. 2) Insufficient available balance or credit limit. 3) The card has expired or the billing address does not match your bank records. 4) PayPal's automated internal security model flagged the payment as risky (try paying with a different linked funding source or wait 24-48 hours before retrying)."
+    tags: ["payment declined", "card declined", "bank declined", "risk filter", "insufficient funds"],
+    content: `Common reasons for payment declines:
+1. Card issuer security filters blocked the charge due to unusual online or overseas location.
+2. Insufficient balance or available credit limit on the selected funding source.
+3. Card expiration date or billing address mismatch.
+4. PayPal internal risk models flagged the checkout session (try using another linked card or wait 24 hours before reattempting).
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
   },
   {
-    id: "kb-12",
-    title: "PayPal Seller Protection policy and criteria",
-    category: "disputes_refunds",
-    tags: ["seller protection", "unauthorized payment", "item not received", "proof of shipment"],
-    content: "PayPal Seller Protection shields eligible sellers from losing money on claims, chargebacks, and reversals for 'Unauthorized Transaction' and 'Item Not Received'. To qualify: the item must be a tangible physical good (or eligible digital service), shipped to the address provided on the Transaction Details page, with valid online tracking showing dispatch and delivery. You must respond to any dispute inquiry within 10 days."
+    id: "faq-20",
+    title: "Understanding PayPal Seller Protection policy and eligibility criteria",
+    category: "disputes",
+    tags: ["seller protection", "unauthorized claim", "item not received", "proof of delivery"],
+    content: `PayPal Seller Protection helps shield sellers against chargebacks and claims:
+1. Covers eligible physical items and select digital goods for "Unauthorized Transaction" and "Item Not Received" claims.
+2. Requires shipping to the address specified on the Transaction Details page with verifiable online tracking.
+3. High-value orders ($750 USD or equivalent) require signature confirmation upon delivery.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
   },
   {
-    id: "kb-13",
-    title: "eCheck payments: Why they take 3 to 6 days to clear",
-    category: "pending_held",
-    tags: ["echeck", "electronic check", "clearing", "pending transfer", "bank clearing"],
-    content: "An eCheck is an electronic funds transfer directly from your bank account to another PayPal user's account. Unlike Instant Transfer, an eCheck does not have a backup card linked. Therefore, the payment remains 'Pending' until the money actually clears through the Automated Clearing House (ACH) network, which typically takes 3 to 6 business days. Sellers are advised not to ship items until the eCheck shows 'Completed'."
+    id: "faq-21",
+    title: "PayPal balance withdrawals: Standard ACH vs Instant Debit Card transfer",
+    category: "receive_money",
+    tags: ["withdraw money", "transfer to bank", "instant transfer", "withdrawal fee", "cash out"],
+    content: `Withdrawing funds from your PayPal balance:
+1. Standard Bank Transfer: Free, transfers funds via ACH to your linked bank within 1 to 3 business days.
+2. Instant Transfer: Sends funds to an eligible debit card or bank account in approximately 30 minutes for a 1.75% fee (capped).
+3. If an ACH withdrawal is delayed past 4 business days, verify routing numbers with your bank.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
   },
   {
-    id: "kb-14",
-    title: "PayPal Payouts and withdrawal delays to bank accounts",
-    category: "pending_held",
-    tags: ["payout", "withdrawal", "withdraw to bank", "bank transfer delay", "instant transfer"],
-    content: "Standard bank withdrawals initiated from your PayPal balance take 1 to 3 business days to reach your bank account (excluding weekends and bank holidays). Instant transfers to eligible debit cards or bank accounts arrive in minutes for a 1.75% fee (capped). If a withdrawal is delayed past 4 business days, verify your bank account details or contact your bank's wire/ACH clearing department."
+    id: "faq-22",
+    title: "How to resolve a negative PayPal balance",
+    category: "account_limitations",
+    tags: ["negative balance", "owed balance", "deficit", "chargeback deficit", "restore balance"],
+    content: `If your PayPal balance becomes negative:
+1. This can happen if a buyer wins a claim or chargeback after you withdrew funds, or if an ACH deposit failed.
+2. Future incoming payments are automatically applied toward the negative deficit.
+3. You can clear the balance immediately by clicking "Resolve Negative Balance" in Wallet and paying with a linked debit card or bank.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
   },
   {
-    id: "kb-15",
-    title: "How to spot and report PayPal phishing scams and spoof emails",
-    category: "unauthorized_fraud",
-    tags: ["phishing", "spoof", "fake email", "scam", "suspicious link", "impersonation"],
-    content: "Legitimate PayPal emails will always address you by your registered first and last name or business name, never 'Dear Customer' or 'Hello User'. PayPal will never ask you to send your password, bank account details, card CVV, or one-time SMS verification code via email or text. Forward suspicious emails as an attachment to phishing@paypal.com and delete them immediately without clicking any links."
+    id: "faq-23",
+    title: "Updating expired credit or debit cards in your Wallet",
+    category: "linking_bank_card",
+    tags: ["update card", "expired card", "expiration date", "new card"],
+    content: `To update card expiration or billing details:
+1. Go to Wallet and click on the card you wish to update.
+2. Click "Update Card".
+3. Enter the new expiration date and CVV/security code, then click "Save".
+4. If your card number has changed, remove the old card and link the new card as a fresh payment method.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
   },
   {
-    id: "kb-16",
-    title: "Goods and Services vs Friends and Family payments",
-    category: "general_features",
-    tags: ["friends and family", "goods and services", "purchase protection", "fees", "p2p"],
-    content: "When sending money: 'Friends and Family' is designed for personal transfers between acquaintances, is free when funding with a linked bank or balance in the same country, but is NOT covered by PayPal Buyer Protection. 'Goods and Services' is for purchasing items or paying freelancers/contractors; the seller pays a small commercial transaction fee, and the buyer is protected under PayPal Purchase Protection in case of disputes."
+    id: "faq-24",
+    title: "How to download PayPal account statements and 1099-K tax documents",
+    category: "fees",
+    tags: ["statements", "1099k", "taxes", "reports", "transaction history statement"],
+    content: `Accessing statements and tax forms:
+1. Go to Activity > Statements > "Custom" or "Standard Monthly Statement".
+2. Select your desired date range and download in PDF or CSV format.
+3. US accounts meeting IRS reporting thresholds can download Form 1099-K under Activity > Statements > Tax Documents.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
   },
   {
-    id: "kb-17",
-    title: "Automatic Payments, Subscriptions, and Billing Agreements",
-    category: "general_features",
-    tags: ["recurring payment", "subscription", "autopay", "cancel subscription", "billing agreement"],
-    content: "To view or cancel active subscriptions and automatic payments: log in, go to Settings (gear icon) > Payments > 'Automatic Payments'. Select the merchant name from the left sidebar and click 'Cancel' or 'Turn Off'. This stops future recurring billings immediately. Any charge already billed must be resolved directly with the merchant or reported via Resolution Center if unauthorized."
+    id: "faq-25",
+    title: "How to permanently close a PayPal account",
+    category: "account_limitations",
+    tags: ["close account", "delete account", "cancel paypal", "terminate account"],
+    content: `Steps before closing your account:
+1. Withdraw any remaining positive balance to your bank account.
+2. Resolve any pending disputes, claims, or negative balances.
+3. Cancel all active subscriptions and billing agreements in Settings > Payments.
+4. Go to Settings (gear icon) > Account > "Close your account" at the bottom of the page. Once closed, an account cannot be reopened.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
   },
   {
-    id: "kb-18",
-    title: "Payment status glossary: Pending vs Processing vs On Hold vs Completed",
-    category: "general_features",
-    tags: ["status meaning", "glossary", "on hold", "pending", "completed", "cancelled", "reversed"],
-    content: "Understanding transaction statuses: 1) 'Pending': awaiting payment source clearing (e.g. eCheck or bank ACH). 2) 'Processing': PayPal has authorized the funds and is completing the transaction. 3) 'On Hold': funds are received but held for security review or shipping verification. 4) 'Completed': transaction successfully settled. 5) 'Reversed' or 'Refunded': payment returned to the sender. 6) 'Failed': transaction could not be processed."
+    id: "faq-26",
+    title: "Payment statuses explained: Pending vs On Hold vs Completed vs Reversed",
+    category: "pending_payments",
+    tags: ["payment status", "glossary", "on hold", "pending", "reversed", "completed"],
+    content: `Guide to PayPal transaction statuses:
+- Pending: Funds are clearing through the payment gateway or bank ACH network.
+- On Hold: Funds were received but are temporarily held for risk review or seller delivery confirmation.
+- Completed: Payment was successfully captured and delivered to the recipient.
+- Reversed / Refunded: Funds were returned to the original payment source.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
   },
   {
-    id: "kb-19",
-    title: "Negative PayPal balance: Causes and how to restore",
-    category: "account_verification",
-    tags: ["negative balance", "owed", "deficit", "chargeback loss", "restore balance"],
-    content: "Your PayPal balance can become negative if a buyer wins a dispute/chargeback after you withdrew funds, or if a bank transfer bounces due to insufficient funds while an instant purchase proceeded. When your balance is negative, subsequent incoming payments are automatically applied to the deficit. You can restore your balance by clicking 'Resolve Negative Balance' in your Wallet and transferring funds via card or bank."
+    id: "faq-27",
+    title: "Paying official PayPal invoices and money requests safely",
+    category: "send_money",
+    tags: ["pay invoice", "money request", "invoice safety", "seller invoice"],
+    content: `When paying an invoice:
+1. Verify the seller name, item description, and total amount before submitting payment.
+2. Paying official PayPal invoices using your PayPal balance or linked card is covered by Buyer Protection for eligible goods.
+3. Never accept an invoice asking you to pay via wire transfer, cryptocurrency, or gift cards.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
   },
   {
-    id: "kb-20",
-    title: "Two-Factor Authentication (2FA) setup and recovery",
-    category: "unauthorized_fraud",
-    tags: ["2fa", "mfa", "authenticator app", "sms otp", "security key", "login security"],
-    content: "Enhance account protection by enabling 2FA: Go to Settings > Security > '2-step verification'. You can register an Authenticator App (like Google Authenticator or 1Password) or opt for SMS text passcodes. We strongly recommend app-based authenticators to defend against SIM-swap attacks. Keep backup codes in a secure physical location."
+    id: "faq-28",
+    title: "How to update your primary email address, phone number, and mailing address",
+    category: "linking_bank_card",
+    tags: ["change email", "update phone", "change address", "profile settings"],
+    content: `Updating personal account information:
+1. Click Settings (gear icon) on the top right.
+2. To update email: click "+" next to Email to add a new address, confirm via email link, and click "Make Primary".
+3. To update phone or address: click "Edit" next to the respective field and verify changes with SMS code verification.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
   },
   {
-    id: "kb-21",
-    title: "Invoice and Payment Request: Paying safely",
-    category: "general_features",
-    tags: ["invoice", "payment request", "pay bill", "buyer protection invoice"],
-    content: "When paying an official PayPal invoice received by email or in your dashboard, check the seller name and item description carefully. Invoices paid with PayPal are eligible for Purchase Protection if the transaction qualifies. Never pay an invoice requesting gift cards or cryptocurrency, or instructions to pay to a personal email using Friends and Family."
+    id: "faq-29",
+    title: "PayPal Buyer Protection: Coverage scope, criteria, and exclusions",
+    category: "disputes",
+    tags: ["buyer protection", "purchase protection", "item not received", "significantly not as described"],
+    content: `PayPal Buyer Protection covers buyers if:
+1. An item purchased online was not received by the estimated delivery date.
+2. The item received is significantly different from what the seller described.
+3. Eligible purchases paid in full with PayPal are covered for the full purchase price plus original shipping costs.
+4. Exclusions include vehicles, industrial machinery, real estate, and payments sent using Friends and Family.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
   },
   {
-    id: "kb-22",
-    title: "Updating expired credit or debit cards",
-    category: "account_verification",
-    tags: ["update card", "expired card", "change expiration date", "cvv update"],
-    content: "To update an expiring card: Navigate to Wallet, click on the card, and select 'Update Card'. Enter the new expiration date, CVV, and confirm billing address. If your card number has changed, remove the old card and link the new card as a fresh payment method."
-  },
-  {
-    id: "kb-23",
-    title: "Tax reporting and 1099-K forms for US accounts",
-    category: "general_features",
-    tags: ["1099k", "tax", "irs", "reporting", "form 1099", "gross payments"],
-    content: "In the United States, PayPal is required by IRS regulations to issue a Form 1099-K to sellers who meet statutory reporting thresholds for goods and services transactions. Personal transfers (Friends & Family) are excluded from 1099-K calculations. You can download your tax documents under Activity > Statements > Tax Documents."
-  },
-  {
-    id: "kb-24",
-    title: "Closing a PayPal account safely",
-    category: "general_features",
-    tags: ["close account", "delete account", "cancel paypal", "remove data"],
-    content: "Before closing your PayPal account: 1) Withdraw any remaining balance to your bank account. 2) Resolve any open disputes, claims, or negative balances. 3) Cancel active automatic payments and subscriptions. Then go to Settings > Account > 'Close your account' at the bottom. Once closed, the account cannot be reopened."
-  },
-  {
-    id: "kb-25",
-    title: "Support escalation policy and callback assistance",
-    category: "general_features",
-    tags: ["support", "call paypal", "human agent", "escalate", "phone callback", "customer service"],
-    content: "PayPal Assist AI can handle most common account and transaction inquiries. In cases of complex disputes, suspected unauthorized account takeovers, or when the automated assistant cannot resolve your problem, you can request an escalation. An automated handoff summary is generated so you never have to repeat your problem, and you can schedule a direct phone callback or connect with our specialized human fraud & risk team."
+    id: "faq-30",
+    title: "How PayPal Assist AI escalates to human voice support",
+    category: "contact_support",
+    tags: ["escalation", "human support", "voice call", "callback", "support escalation"],
+    content: `PayPal Assist AI escalation protocol:
+1. PayPal Assist AI resolves common questions about transactions, holds, fees, and procedures.
+2. Human support callback is offered if: the assistant cannot resolve the issue, the customer expresses dissatisfaction, or high fraud risk is detected.
+3. When escalating, the assistant generates an automated handoff case summary and allows users to schedule a phone callback without repeating themselves.
+
+*Notice: This is a demo article for educational/support simulation purposes and does not represent official PayPal policy.*`
   }
 ];
 
-// Simple BM25-inspired term-overlap & keyword RAG search with scoring
+// Write individual markdown files to knowledge_base directory
+export function syncMarkdownKnowledgeBase() {
+  FAQ_ARTICLES.forEach(art => {
+    const filename = `${art.id}-${art.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 45)}.md`;
+    const filePath = path.join(KB_DIR, filename);
+    const mdContent = `---
+id: "${art.id}"
+title: "${art.title}"
+category: "${art.category}"
+tags: [${art.tags.map(t => `"${t}"`).join(', ')}]
+---
+
+# ${art.title}
+
+${art.content}
+`;
+    fs.writeFileSync(filePath, mdContent, 'utf-8');
+  });
+  console.log(`✅ Synced ${FAQ_ARTICLES.length} FAQ markdown articles into /knowledge_base`);
+}
+
+// In-memory BM25-inspired retrieval with exact token boundary matching
 export function searchKnowledgeBase(query, topK = 3) {
   if (!query || typeof query !== 'string') return [];
   const normalizedQuery = query.toLowerCase();
 
-  const stopWords = new Set(['what', 'when', 'where', 'which', 'who', 'whom', 'this', 'that', 'with', 'from', 'have', 'your', 'about', 'will', 'into', 'does', 'find', 'make', 'right', 'should', 'here', 'there', 'some', 'someone', 'somebody']);
+  const stopWords = new Set([
+    'what', 'when', 'where', 'which', 'who', 'whom', 'this', 'that', 'with', 
+    'from', 'have', 'your', 'about', 'will', 'into', 'does', 'find', 'make', 
+    'right', 'should', 'here', 'there', 'some', 'someone', 'somebody', 'please', 
+    'tell', 'could', 'would', 'give', 'know', 'received', 'claiming', 'can', 'you',
+    'for', 'how', 'why', 'are', 'was', 'the', 'and', 'but'
+  ]);
   const queryTokens = normalizedQuery
-    .replace(/[^\w\s-]/g, ' ')
+    .replace(/[^a-z0-9\s-]/g, ' ')
     .split(/\s+/)
     .filter(t => t.length > 2 && !stopWords.has(t));
 
-  const scored = KNOWLEDGE_BASE.map(article => {
+  if (queryTokens.length === 0) return [];
+
+  const scored = FAQ_ARTICLES.map(article => {
     let score = 0;
-    const titleLower = article.title.toLowerCase();
+    const titleWords = new Set(article.title.toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').split(/\s+/));
+    const tagWords = new Set(article.tags.flatMap(t => t.toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').split(/\s+/)));
     const contentLower = article.content.toLowerCase();
-    const tagsLower = article.tags.map(t => t.toLowerCase());
 
     // Exact phrase match bonus
-    if (titleLower.includes(normalizedQuery)) score += 30;
+    if (article.title.toLowerCase().includes(normalizedQuery)) score += 40;
     if (contentLower.includes(normalizedQuery)) score += 15;
 
-    // Token matching
+    // Exact token matching against title & tags words
     queryTokens.forEach(token => {
-      if (titleLower.includes(token)) score += 12;
-      if (tagsLower.some(t => t.includes(token))) score += 10;
-      if (contentLower.includes(token)) score += 2;
+      if (tagWords.has(token)) score += 15;
+      if (titleWords.has(token)) score += 12;
+      if (contentLower.includes(token)) score += 1;
     });
 
     return { article, score };
   });
 
   return scored
-    .filter(item => item.score > 0)
+    .filter(item => item.score >= 12)
     .sort((a, b) => b.score - a.score)
     .slice(0, topK)
     .map(item => ({
       id: item.article.id,
       title: item.article.title,
       category: item.article.category,
-      snippet: item.article.content.slice(0, 220) + '...',
+      snippet: item.article.content.slice(0, 240) + '...',
       fullContent: item.article.content,
       score: item.score
     }));

@@ -120,9 +120,9 @@ export function evaluateEscalationTriggers(userMessage, conversationHistory = []
   ];
 
   const angerTriggers = [
-    'terrible', 'horrible', 'worst support', 'useless', 'scam', 'fraud',
+    'terrible', 'horrible', 'worst support', 'useless', 'scam',
     'lawyer', 'sue', 'police', 'stolen', 'hacked', 'furious', 'complaint',
-    'waste of time', 'angry', 'liar', 'cheated'
+    'waste of time', 'angry', 'unhappy', 'liar', 'cheated'
   ];
 
   const highRiskTriggers = [
@@ -130,8 +130,11 @@ export function evaluateEscalationTriggers(userMessage, conversationHistory = []
     'someone took money', 'fraudulent charge', 'otp intercepted'
   ];
 
+  // If asking a standard question or refund timeline without expressing anger, do not trigger
+  const isQuestion = /when will|where is|how do|can you check|what is/i.test(text);
+
   const requestedHuman = humanExplicitTriggers.some(t => text.includes(t));
-  const isAngry = angerTriggers.some(t => text.includes(t));
+  const isAngry = !isQuestion && angerTriggers.some(t => text.includes(t));
   const isHighRisk = highRiskTriggers.some(t => text.includes(t));
 
   // Determine if repeat failures exist
