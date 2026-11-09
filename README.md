@@ -63,22 +63,45 @@ cd "C:\Users\goyal\.gemini\antigravity\scratch\paypal-assist"
 npm install
 ```
 
-### 3. Environment Variables
-Copy `.env.example` to `.env`:
+### 3. Environment Variables & PayPal Sandbox Credentials
+Create or edit your local `.env` file (copied from `.env.example`). Note that `.env` and `.env.*.local` are explicitly excluded in `.gitignore` to prevent secret leaks:
+
 ```env
 PORT=3000
 
-# Optional: To use live Claude function calling (defaults to built-in autonomous engine if omitted)
-ANTHROPIC_API_KEY=your_key_here
-CLAUDE_MODEL=claude-3-7-sonnet-20250219
+# PayPal Environment (sandbox | live)
+PAYPAL_ENV=sandbox
 
-# Optional: PayPal Developer Sandbox Credentials
-PAYPAL_API_BASE=https://api-m.sandbox.paypal.com
-PAYPAL_CLIENT_ID=
-PAYPAL_CLIENT_SECRET=
+# PayPal Sandbox Credentials
+# 1. Log in to https://developer.paypal.com/dashboard/applications/sandbox
+# 2. Select or create your REST Sandbox App
+# 3. Copy Client ID and Secret into your local .env (never paste secrets into git or chat):
+PAYPAL_CLIENT_ID=your_sandbox_client_id_here
+PAYPAL_CLIENT_SECRET=your_sandbox_client_secret_here
+
+# PayPal Webhook ID (Optional for webhook verification):
+PAYPAL_WEBHOOK_ID=your_webhook_id_here
+
+# Optional: Anthropic Claude API Key (defaults to built-in autonomous engine if empty)
+ANTHROPIC_API_KEY=
+CLAUDE_MODEL=claude-3-7-sonnet-20250219
 ```
 
-### 4. Seed Data
+> **Security Rule**: The `PAYPAL_CLIENT_SECRET` is never transmitted to the browser or logged. Only `PAYPAL_CLIENT_ID` is safely exposed via `/api/config` for the frontend PayPal JS SDK buttons.
+
+### 4. PayPal REST API Endpoints & Verification
+- `POST /api/paypal/create-order` - Validates amount on server and creates an order with a unique `PayPal-Request-Id` idempotency header.
+- `POST /api/paypal/capture-order` - Authorizes and captures order with idempotency.
+- `GET /api/paypal/order/:orderId` - Fetches order details from PayPal.
+- `POST /api/paypal/refund-capture` - Refunds a capture.
+- `POST /api/paypal/webhook` - Verifies incoming webhook signatures with PayPal's `/v1/notifications/verify-webhook-signature` endpoint and handles `PAYMENT.CAPTURE.COMPLETED`, `PAYMENT.CAPTURE.DENIED`, and `PAYMENT.CAPTURE.REFUNDED` idempotently.
+
+Run the automated PayPal REST API sandbox test suite:
+```bash
+node scripts/test-paypal-sandbox.js
+```
+
+### 5. Seed Data
 Pre-load 200 synthetic conversations into the dashboard:
 ```bash
 npm run seed

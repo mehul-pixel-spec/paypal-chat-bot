@@ -384,3 +384,169 @@ async function approveArticle(patternId) {
     alert("Approval error: " + err.message);
   }
 }
+
+// -------------------------------------------------------------
+// PayPal JS SDK Integration (Create-Order & Capture-Order Flow)
+// -------------------------------------------------------------
+let paypalSdkLoaded = false;
+let paypalConfig = null;
+
+async function fetchPayPalPublicConfig() {
+  if (paypalConfig) return paypalConfig;
+  try {
+    const res = await fetch('/api/config');
+    const data = await res.json();
+    paypalConfig = data.paypal;
+    return paypalConfig;
+  } catch (err) {
+    console.error("Failed to load public config:", err);
+    return null;
+  }
+}
+
+async function openCheckoutModal() {
+  document.getElementById('checkout-modal').style.display = 'flex';
+  const alertEl = document.getElementById('paypal-status-alert');
+  alertEl.style.display = 'none';
+
+  const cfg = await fetchPayPalPublicConfig();
+  const clientId = cfg?.clientId;
+
+  const btnContainer = document.getElementById('paypal-button-container');
+
+  // If client ID is configured and SDK not yet loaded
+  if (clientId && !paypalSdkLoaded) {
+    btnContainer.innerHTML = '<div style="text-align: center; color: #64748b; font-size: 13px;">Loading PayPal JS SDK...</div>';
+    const script = document.createElement('script');
+    script.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(clientId)}&currency=USD&intent=capture`;
+    script.async = true;
+    script.onload = () => {
+      paypalSdkLoaded = true;
+      renderPayPalButtons();
+    };
+    script.onerror = () => {
+      renderFallbackButton("Failed to load PayPal JS SDK. Check your Client ID.");
+    };
+    document.body.appendChild(script);
+  } else if (paypalSdkLoaded && window.paypal) {
+    renderPayPalButtons();
+  } else {
+    // Graceful fallback for sandbox / mock testing without live keys
+    renderFallbackButton("Running in sandbox demonstration mode. Click below to test create-order & capture-order endpoints.");
+  }
+}
+
+function closeCheckoutModal() {
+  document.getElementById('checkout-modal').style.display = 'none';
+}
+
+function showCheckoutStatus(type, message) {
+  const alertEl = document.getElementById('paypal-status-alert');
+  alertEl.style.display = 'block';
+  if (type === 'success') {
+    alertEl.style.background = '#ecfdf5';
+    alertEl.style.color = '#065f46';
+    alertEl.style.border = '1px solid #a7f3d0';
+    alertEl.innerHTML = `<strong>Success!</strong> ${message}`;
+  } else if (type === 'error') {
+    alertEl.style.background = '#fef2f2';
+    alertEl.style.color = '#991b1b';
+    alertEl.style.border = '1px solid #fecaca';
+    alertEl.innerHTML = `<strong>Failed:</strong> ${message}`;
+  } else if (type === 'cancel') {
+    alertEl.style.background = '#fffbeb';
+    alertEl.style.color = '#92400e';
+    alertEl.style.border = '1px solid #fde68a';
+    alertEl.innerHTML = `<strong>Cancelled:</strong> ${message}`;
+  }
+}
+
+function renderPayPalButtons() {
+  const container = document.getElementById('paypal-button-container');
+  container.innerHTML = '';
+
+  if (!window.paypal) return;
+
+  window.paypal.Buttons({
+    style: {
+      layout: 'vertical',
+      color: 'gold',
+      shape: 'rect',
+      label: 'paypal'
+    },
+    createOrder: async () => {
+      try {
+        const res = await fetch('/api/paypal/create-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amount: "45.00", currency: "USD" })
+        });
+        const data = await res.json();
+        if (data.orderId) {
+          return data.orderId;
+        }
+        throw new Error(data.message || data.error || 'Failed to create order');
+      } catch (err) {
+        showCheckoutStatus('error', err.message);
+        throw err;
+      }
+    },
+    onApprove: async (data) => {
+      try {
+        const res = await fetch('/api/paypal/capture-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderId: data.orderID })
+        });
+        const captureResult = await res.json();
+        if (captureResult.status === 'COMPLETED' || captureResult.mode === 'mock_sandbox') {
+          showCheckoutStatus('success', `Payment captured successfully! Order ID: ${captureResult.orderId}, Capture ID: ${captureResult.captureId || 'N/A'}`);
+        } else {
+          showCheckoutStatus('error', `Capture status: ${captureResult.status}`);
+        }
+      } catch (err) {
+        showCheckoutStatus('error', `Capture error: ${err.message}`);
+      }
+    },
+    onCancel: (data) => {
+      showCheckoutStatus('cancel', 'Checkout was cancelled by user. No funds were debited.');
+    },
+    onError: (err) => {
+      showCheckoutStatus('error', err.message || 'PayPal checkout error occurred.');
+    }
+  }).render('#paypal-button-container');
+}
+
+function renderFallbackButton(notice) {
+  const container = document.getElementById('paypal-button-container');
+  container.innerHTML = `
+    <div style="font-size: 12px; color: #64748b; margin-bottom: 12px; line-height: 1.4;">${notice}</div>
+    <button class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px;" onclick="testFullCheckoutFlow()">
+      Simulate Complete Sandbox Order & Capture ($45.00)
+    </button>
+  `;
+}
+
+async function testFullCheckoutFlow() {
+  try {
+    showCheckoutStatus('cancel', 'Initiating /api/paypal/create-order...');
+    const orderRes = await fetch('/api/paypal/create-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: "45.00", currency: "USD" })
+    });
+    const order = await orderRes.json();
+
+    showCheckoutStatus('cancel', `Order created (${order.orderId}). Simulating approval & capture...`);
+    const capRes = await fetch('/api/paypal/capture-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orderId: order.orderId })
+    });
+    const capture = await capRes.json();
+
+    showCheckoutStatus('success', `Order ${capture.orderId} captured successfully! Capture ID: ${capture.captureId}. Mode: ${capture.mode}`);
+  } catch (err) {
+    showCheckoutStatus('error', err.message);
+  }
+}

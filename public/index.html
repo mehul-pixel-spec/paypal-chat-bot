@@ -52,13 +52,17 @@
           <span class="sandbox-pill">● PayPal Sandbox & Mock Active</span>
         </div>
         <div class="top-actions">
+          <button class="btn btn-primary" onclick="openCheckoutModal()" title="Open PayPal checkout test with real PayPal JS SDK button">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+            Pay with PayPal (SDK)
+          </button>
           <button class="btn btn-secondary" onclick="triggerDemoPayment()" title="Simulate a failed-but-deducted payment to test the main use case">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
             Trigger Demo Failed Payment
           </button>
           <button class="btn btn-secondary" onclick="createSandboxOrder()">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-            Create Sandbox Order
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            Test Order API
           </button>
           <button class="btn btn-danger-outline" onclick="resetDatabase()" title="Reset mock database to seed state">
             Reset Data
@@ -226,6 +230,41 @@
         </div>
       </section>
     </main>
+  </div>
+
+  <!-- PayPal JS SDK Checkout Modal -->
+  <div class="modal-overlay" id="checkout-modal">
+    <div class="modal-content" style="width: 480px;">
+      <h3 style="font-family: var(--font-display); font-size: 18px; margin-bottom: 6px; color: var(--pp-navy);">
+        PayPal Sandbox Checkout Test
+      </h3>
+      <p style="font-size: 13px; color: #64748b; margin-bottom: 16px;">
+        Test real sandbox checkout using the official PayPal JS SDK Button.
+      </p>
+
+      <div style="background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px; margin-bottom: 16px;">
+        <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;">
+          <span style="color: #64748b;">Verification Order Item:</span>
+          <strong>Cloud API Support Pack</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; color: var(--text-main);">
+          <span>Total Amount (USD):</span>
+          <span>$45.00</span>
+        </div>
+      </div>
+
+      <!-- State Alerts -->
+      <div id="paypal-status-alert" style="display: none; padding: 10px 14px; border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 14px;"></div>
+
+      <!-- PayPal Buttons Container -->
+      <div id="paypal-button-container" style="min-height: 100px; display: flex; flex-direction: column; justify-content: center;">
+        <div style="text-align: center; color: #94a3b8; font-size: 12px;">Loading PayPal JS SDK...</div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; border-top: 1px solid var(--border-subtle); padding-top: 12px;">
+        <button class="btn btn-secondary" onclick="closeCheckoutModal()">Close</button>
+      </div>
+    </div>
   </div>
 
   <!-- Callback Booking Modal -->
